@@ -1,105 +1,56 @@
    <!DOCTYPE html>
-<html lang="ta">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Md Shop - Online Store</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            text-align: center;
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: auto;
-        }
-        button {
-            padding: 10px 20px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background: #218838;
-        }
-        input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    </style>
+<title>My Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    body { text-align:center; font-family:Arial; padding: 20px; background-color: #f9f9f9; }
+    .page { display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 300px; margin: auto; }
+    #page1 { display: block; } /* முதல் பக்கம் மட்டும் தெரியும்படி */
+    button { padding:10px 20px; background:green; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px; }
+    input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <div id="page1">
-        <h2>🛍️ Welcome to Our Shop</h2>
-        <p>Best Products at Low Price</p>
-        <button onclick="next1()">View Product</button>
-    </div>
+<div id="page1" class="page">
+    <h2>🛍️ Welcome to Our Shop</h2>
+    <p>Best Products at Low Price</p>
+    <button onclick="showPage('page2')">View Product</button>
+</div>
 
-    <div id="page2" style="display:none;">
-        <h2>📦 Product Details</h2>
-        <img src="https://via.placeholder.com/150" alt="T-Shirt" style="width:150px; margin-bottom:10px;">
-        <p><strong>Product Name:</strong> T-Shirt</p>
-        <p><strong>Price:</strong> ₹499</p>
-        <button onclick="next2()">Order Now</button>
-    </div>
+<div id="page2" class="page">
+    <h2>📦 Product Details</h2>
+    <p>Product Name: T-Shirt</p>
+    <p>Price: ₹499</p>
+    <button onclick="showPage('page3')">Order Now</button>
+</div>
 
-    <div id="page3" style="display:none;">
-        <h2>🧾 Enter Details</h2>
-        <input type="text" id="name" placeholder="உங்கள் பெயர்" required><br>
-        <input type="text" id="address" placeholder="உங்கள் முகவரி" required><br>
-        <button onclick="send()">Confirm via WhatsApp</button>
-    </div>
+<div id="page3" class="page">
+    <h2>🧾 Enter Details</h2>
+    <input id="name" placeholder="Name"><br>
+    <input id="address" placeholder="Address"><br>
+    <button onclick="sendOrder()">Confirm on WhatsApp</button>
 </div>
 
 <script>
-    [span_0](start_span)// பக்கம் 1-லிருந்து 2-க்குச் செல்ல[span_0](end_span)
-    function next1(){
-        document.getElementById("page1").style.display="none";
-        [span_1](start_span)document.getElementById("page2").style.display="block";[span_1](end_span)
-    }
+function showPage(pageId) {
+    // அனைத்து பக்கங்களையும் மறைக்க
+    document.getElementById("page1").style.display = "none";
+    document.getElementById("page2").style.display = "none";
+    document.getElementById("page3").style.display = "none";
+    
+    // தேவையான பக்கத்தை மட்டும் காட்ட
+    document.getElementById(pageId).style.display = "block";
+}
 
-    [span_2](start_span)// பக்கம் 2-லிருந்து 3-க்குச் செல்ல[span_2](end_span)
-    function next2(){
-        document.getElementById("page2").style.display="none";
-        document.getElementById("page3").style.display="block";
-    }
-
-    [span_3](start_span)// வாட்ஸ்அப் மூலம் விபரங்களை அனுப்ப[span_3](end_span)
-    function send(){
-        var customerName = document.getElementById("name").value;
-        var customerAddress = document.getElementById("address").value;
-        var phoneNumber = "919488934686"; [span_4](start_span)// உங்கள் எண்[span_4](end_span)
-
-        if(customerName == "" || customerAddress == ""){
-            alert("தயவுசெய்து விபரங்களை நிரப்பவும்!");
-            return;
-        }
-
-        // வாட்ஸ்அப் மெசேஜ் தயார் செய்தல்
-        var message = "New Order! 🛍️%0A%0A" + 
-                      "*Item:* T-Shirt%0A" + 
-                      "*Price:* ₹499%0A" + 
-                      "*Name:* " + customerName + "%0A" + 
-                      "*Address:* " + customerAddress;
-
-        [span_5](start_span)// வாட்ஸ்அப் லிங்க் ஓப்பன் செய்தல்[span_5](end_span)
-        window.open("https://wa.me/" + phoneNumber + "?text=" + message);
-    }
+function sendOrder() {
+    let name = document.getElementById("name").value;
+    let address = document.getElementById("address").value;
+    let msg = "Order Details:%0A" + "Name: " + name + "%0A" + "Address: " + address;
+    window.open("https://wa.me/919488934686?text=" + msg);
+}
 </script>
 
 </body>
