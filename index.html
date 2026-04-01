@@ -1,90 +1,115 @@
 <!DOCTYPE html>
 <html lang="ta">
 <head>
-<title>Md Shop</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-    body { text-align:center; font-family:Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
-    .page { display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 350px; margin: auto; }
-    #page1 { display: block; }
-    button { padding:12px 20px; background: #28a745; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:15px; width: 100%; font-size: 16px; }
-    input { width: 92%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-    h2 { color: #333; }
-</style>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md Shop - Order Page</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f0f2f5; padding: 20px; margin: 0; }
+        .page { display: none; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 380px; margin: 20px auto; animation: fadeIn 0.5s; }
+        #page1 { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        h2 { color: #333; margin-bottom: 10px; }
+        p { color: #666; font-size: 14px; }
+
+        .input-group { text-align: left; margin-bottom: 15px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: 0.3s; }
+        input:focus { border-color: #28a745; outline: none; box-shadow: 0 0 5px rgba(40,167,69,0.2); }
+
+        button { width: 100%; padding: 14px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        button:hover { background-color: #218838; }
+        
+        .product-img { width: 100px; height: 100px; margin-bottom: 10px; }
+    </style>
+</head>
 <body>
 
-<div id="page1" class="page">
-    <h2>🛍️ Welcome to Our Shop</h2>
-    <p>Best Products at Low Price</p>
-    <button onclick="showPage('page2')">View Product</button>
-</div>
+    <div id="page1" class="page">
+        <div style="font-size: 50px;">🛍️</div>
+        <h2>Welcome to Our Shop</h2>
+        <p>Best Products at Low Price</p>
+        <button onclick="showPage('page2')">View Product</button>
+    </div>
 
-<div id="page2" class="page">
-    <h2>📦 Product Details</h2>
-    <p><strong>Product Name:</strong>MAR</p>
-    <p><strong>Price:</strong> ₹50</p>
-    <button onclick="showPage('page3')">Order Now</button>
-</div>
+    <div id="page2" class="page">
+        <div style="font-size: 50px;">📦</div>
+        <h2>Product Details</h2>
+        <p><strong>Item:</strong> Special T-Shirt</p>
+        <p><strong>Price:</strong> ₹499</p>
+        <button onclick="showPage('page3')">Order Now</button>
+    </div>
 
-<div id="page3" class="page">
-    <h2>🧾 Enter Details</h2>
-    <input type="text" id="name" placeholder="Name">
-    <input type="text" id="address" placeholder="Full Address">
-    <input type="text" id="landmark" placeholder="Landmark">
-    <input type="number" id="pincode" placeholder="Pincode">
-    <input type="text" id="state" placeholder="State">
-    <input type="number" id="mobile" placeholder="Mobile Number">
-    <input type="number" id="alt_mobile" placeholder="Alternative Number">
-    <input type="number" id="pcs" placeholder="How many pcs">
-    
-    <button onclick="sendOrder()">Confirm Order via WhatsApp</button>
-</div>
+    <div id="page3" class="page">
+        <div style="font-size: 30px;">🧾</div>
+        <h2>Enter Details</h2>
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="address" placeholder="Full Address">
+        <input type="text" id="landmark" placeholder="Landmark">
+        <input type="number" id="pincode" placeholder="Pincode">
+        <input type="text" id="state" placeholder="State">
+        <input type="number" id="mobile" placeholder="Mobile Number">
+        <input type="number" id="alt_mobile" placeholder="Alternative Number">
+        <input type="number" id="pcs" placeholder="How many pcs">
+        
+        <button onclick="sendOrder()">Confirm Order via WhatsApp</button>
+    </div>
 
-<script>
-function showPage(pageId) {
-    // அனைத்து பக்கங்களையும் மறைத்துவிட்டு தேவையானதை மட்டும் காட்டுகிறது
-    document.getElementById("page1").style.display = "none";
-    document.getElementById("page2").style.display = "none";
-    document.getElementById("page3").style.display = "none";
-    document.getElementById(pageId).style.display = "block";
-}
+    <script>
+        // பக்கங்களை மாற்றும் வசதி
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            window.scrollTo(0,0);
+        }
 
-function sendOrder() {
-    // உள்ளீடு செய்யப்பட்ட விவரங்களைச் சேகரித்தல்
-    let name = document.getElementById("name").value;
-    let address = document.getElementById("address").value;
-    let landmark = document.getElementById("landmark").value;
-    let pincode = document.getElementById("pincode").value;
-    let state = document.getElementById("state").value;
-    let mobile = document.getElementById("mobile").value;
-    let alt_mobile = document.getElementById("alt_mobile").value;
-    let pcs = document.getElementById("pcs").value;
+        // ஆர்டர் அனுப்பும் வசதி
+        function sendOrder() {
+            // 1. தானாக உயரும் Order ID (localStorage மூலம்)
+            let lastNum = localStorage.getItem("orderIDCount") || 20040;
+            let nextNum = parseInt(lastNum) + 1;
+            localStorage.setItem("orderIDCount", nextNum);
+            let finalOrderID = "md" + nextNum;
 
-    // ஏதேனும் விவரம் விடுபட்டுள்ளதா எனச் சரிபார்க்க
-    if(name=="" || address=="" || mobile=="" || pcs=="") {
-        alert("தயவுசெய்து முக்கிய விவரங்களை நிரப்பவும்!");
-        return;
-    }
+            // 2. விவரங்களைச் சேகரித்தல்
+            let data = {
+                name: document.getElementById("name").value,
+                addr: document.getElementById("address").value,
+                land: document.getElementById("landmark").value,
+                pin: document.getElementById("pincode").value,
+                state: document.getElementById("state").value,
+                mob: document.getElementById("mobile").value,
+                alt: document.getElementById("alt_mobile").value,
+                pcs: document.getElementById("pcs").value
+            };
 
-    // வாட்ஸ்அப் மெசேஜ் வடிவம்
-    let message = "*New Order Received!* 🛍️%0A%0A" + 
-                  "*Name:* " + name + "%0A" +
-                  "*Address:* " + address + "%0A" +
-                  "*Landmark:* " + landmark + "%0A" +
-                  "*Pincode:* " + pincode + "%0A" +
-                  "*State:* " + state + "%0A" +
-                  "*Mobile:* " + mobile + "%0A" +
-                  "*Alt Mobile:* " + alt_mobile + "%0A" +
-                  "*Quantity:* " + pcs + " pcs";
+            // 3. சரிபார்த்தல் (Validation)
+            if(!data.name || !data.mob || !data.addr) {
+                alert("தயவுசெய்து முக்கியமான விவரங்களை (Name, Mobile, Address) நிரப்பவும்!");
+                return;
+            }
 
-    // உங்கள் வாட்ஸ்அப் எண்ணிற்கு அனுப்புதல்
-    let whatsappURL = "https://wa.me/919488934686?text=" + message;
-    window.open(whatsappURL, "_blank");
-}
-</script>
+            // 4. வாட்ஸ்அப் மெசேஜ் வடிவம்
+            let message = "*New Order Received!* 🛍️%0A" + 
+                          "---------------------------%0A" +
+                          "*Order ID:* " + finalOrderID + "%0A" + 
+                          "---------------------------%0A" +
+                          "*Name:* " + data.name + "%0A" +
+                          "*Address:* " + data.addr + "%0A" +
+                          "*Landmark:* " + data.land + "%0A" +
+                          "*Pincode:* " + data.pin + "%0A" +
+                          "*State:* " + data.state + "%0A" +
+                          "*Mobile:* " + data.mob + "%0A" +
+                          "*Alt Mobile:* " + data.alt + "%0A" +
+                          "*Quantity:* " + data.pcs + " pcs%0A" +
+                          "---------------------------%0A" +
+                          "Please confirm this order!";
 
+            // 5. வாட்ஸ்அப்பிற்கு அனுப்புதல்
+            let whatsappURL = "https://wa.me/919488934686?text=" + message;
+            window.open(whatsappURL, "_blank");
+        }
+    </script>
 </body>
 </html>
