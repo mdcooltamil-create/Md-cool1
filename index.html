@@ -1,14 +1,16 @@
-   <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="ta">
 <head>
-<title>My Shop</title>
+<title>Md Shop</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-    body { text-align:center; font-family:Arial; padding: 20px; background-color: #f9f9f9; }
-    .page { display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 300px; margin: auto; }
-    #page1 { display: block; } /* முதல் பக்கம் மட்டும் தெரியும்படி */
-    button { padding:10px 20px; background:green; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px; }
-    input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+    body { text-align:center; font-family:Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+    .page { display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 350px; margin: auto; }
+    #page1 { display: block; }
+    button { padding:12px 20px; background: #28a745; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:15px; width: 100%; font-size: 16px; }
+    input { width: 92%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+    h2 { color: #333; }
 </style>
 </head>
 
@@ -22,34 +24,65 @@
 
 <div id="page2" class="page">
     <h2>📦 Product Details</h2>
-    <p>Product Name: T-Shirt</p>
-    <p>Price: ₹499</p>
+    <p><strong>Product Name:</strong> T-Shirt</p>
+    <p><strong>Price:</strong> ₹499</p>
     <button onclick="showPage('page3')">Order Now</button>
 </div>
 
 <div id="page3" class="page">
     <h2>🧾 Enter Details</h2>
-    <input id="name" placeholder="Name"><br>
-    <input id="address" placeholder="Address"><br>
-    <button onclick="sendOrder()">Confirm on WhatsApp</button>
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="address" placeholder="Full Address">
+    <input type="text" id="landmark" placeholder="Landmark">
+    <input type="number" id="pincode" placeholder="Pincode">
+    <input type="text" id="state" placeholder="State">
+    <input type="number" id="mobile" placeholder="Mobile Number">
+    <input type="number" id="alt_mobile" placeholder="Alternative Number">
+    <input type="number" id="pcs" placeholder="How many pcs">
+    
+    <button onclick="sendOrder()">Confirm Order via WhatsApp</button>
 </div>
 
 <script>
 function showPage(pageId) {
-    // அனைத்து பக்கங்களையும் மறைக்க
+    // அனைத்து பக்கங்களையும் மறைத்துவிட்டு தேவையானதை மட்டும் காட்டுகிறது
     document.getElementById("page1").style.display = "none";
     document.getElementById("page2").style.display = "none";
     document.getElementById("page3").style.display = "none";
-    
-    // தேவையான பக்கத்தை மட்டும் காட்ட
     document.getElementById(pageId).style.display = "block";
 }
 
 function sendOrder() {
+    // உள்ளீடு செய்யப்பட்ட விவரங்களைச் சேகரித்தல்
     let name = document.getElementById("name").value;
     let address = document.getElementById("address").value;
-    let msg = "Order Details:%0A" + "Name: " + name + "%0A" + "Address: " + address;
-    window.open("https://wa.me/919488934686?text=" + msg);
+    let landmark = document.getElementById("landmark").value;
+    let pincode = document.getElementById("pincode").value;
+    let state = document.getElementById("state").value;
+    let mobile = document.getElementById("mobile").value;
+    let alt_mobile = document.getElementById("alt_mobile").value;
+    let pcs = document.getElementById("pcs").value;
+
+    // ஏதேனும் விவரம் விடுபட்டுள்ளதா எனச் சரிபார்க்க
+    if(name=="" || address=="" || mobile=="" || pcs=="") {
+        alert("தயவுசெய்து முக்கிய விவரங்களை நிரப்பவும்!");
+        return;
+    }
+
+    // வாட்ஸ்அப் மெசேஜ் வடிவம்
+    let message = "*New Order Received!* 🛍️%0A%0A" + 
+                  "*Name:* " + name + "%0A" +
+                  "*Address:* " + address + "%0A" +
+                  "*Landmark:* " + landmark + "%0A" +
+                  "*Pincode:* " + pincode + "%0A" +
+                  "*State:* " + state + "%0A" +
+                  "*Mobile:* " + mobile + "%0A" +
+                  "*Alt Mobile:* " + alt_mobile + "%0A" +
+                  "*Quantity:* " + pcs + " pcs";
+
+    // உங்கள் வாட்ஸ்அப் எண்ணிற்கு அனுப்புதல்
+    let whatsappURL = "https://wa.me/919488934686?text=" + message;
+    window.open(whatsappURL, "_blank");
 }
 </script>
 
