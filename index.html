@@ -14,14 +14,17 @@
         h2 { color: #333; margin-bottom: 10px; }
         p { color: #666; font-size: 14px; }
 
-        .input-group { text-align: left; margin-bottom: 15px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: 0.3s; }
-        input:focus { border-color: #28a745; outline: none; box-shadow: 0 0 5px rgba(40,167,69,0.2); }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        input:focus { border-color: #28a745; outline: none; }
 
-        button { width: 100%; padding: 14px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.3s; }
-        button:hover { background-color: #218838; }
+        button, .pay-btn { width: 100%; padding: 14px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.3s; display: block; text-decoration: none; box-sizing: border-box; }
+        button:hover, .pay-btn:hover { background-color: #218838; }
         
-        .product-img { width: 100px; height: 100px; margin-bottom: 10px; }
+        .whatsapp-btn { background-color: #25D366; }
+        .whatsapp-btn:hover { background-color: #128C7E; }
+        
+        .price-breakup { text-align: left; background: #f9f9f9; padding: 10px; border-radius: 8px; margin: 15px 0; font-size: 14px; }
+        .important-note { color: #d9534f; font-weight: bold; font-size: 13px; margin: 10px 0; border: 1px dashed #d9534f; padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -51,62 +54,95 @@
         <input type="text" id="state" placeholder="State">
         <input type="number" id="mobile" placeholder="Mobile Number">
         <input type="number" id="alt_mobile" placeholder="Alternative Number">
-        <input type="number" id="pcs" placeholder="How many pcs">
+        <input type="number" id="pcs" placeholder="How many pcs" value="1">
         
-        <button onclick="sendOrder()">Confirm Order via WhatsApp</button>
+        <button onclick="goToPayment()">Next to Payment</button>
+    </div>
+
+    <div id="page4" class="page">
+        <div style="font-size: 30px;">💳</div>
+        <h2>Payment Details</h2>
+        
+        <div class="price-breakup">
+            <div style="display:flex; justify-content: space-between;">
+                <span>Product Price:</span> <span id="prodPrice">₹0</span>
+            </div>
+            <div style="display:flex; justify-content: space-between; color: #555;">
+                <span>Courier Charges:</span> <span>₹100</span>
+            </div>
+            <hr>
+            <div style="display:flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #000;">
+                <span>Total Amount:</span> <span id="totalAmount">₹0</span>
+            </div>
+        </div>
+
+        <div class="important-note">
+            ⚠️ கவனிக்கவும்: நீங்கள் பணம் செலுத்திவிட்டால் அதன் ஸ்கிரீன்ஷாட்டை (Screenshot) கண்டிப்பாக அடுத்த பக்கத்தில் அனுப்ப வேண்டும்.
+        </div>
+        
+        <a id="upiLink" href="#" class="pay-btn">Pay via UPI (GPay/PhonePe)</a>
+        
+        <button class="whatsapp-btn" onclick="sendOrder()">Confirm & Send Screenshot via WhatsApp</button>
+        <button style="background: #666; font-size: 14px;" onclick="showPage('page3')">Edit Details</button>
     </div>
 
     <script>
-        // பக்கங்களை மாற்றும் வசதி
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.getElementById(id).style.display = 'block';
             window.scrollTo(0,0);
         }
 
-        // ஆர்டர் அனுப்பும் வசதி
+        function goToPayment() {
+            let name = document.getElementById("name").value;
+            let addr = document.getElementById("address").value;
+            let mob = document.getElementById("mobile").value;
+            let pcs = document.getElementById("pcs").value;
+
+            if(!name || !mob || !addr || !pcs) {
+                alert("தயவுசெய்து அனைத்து விவரங்களையும் நிரப்பவும்!");
+                return;
+            }
+
+            let itemPrice = 50;
+            let courierCharge = 100;
+            let productTotal = pcs * itemPrice;
+            let grandTotal = productTotal + courierCharge;
+            
+            document.getElementById("prodPrice").innerText = "₹" + productTotal;
+            document.getElementById("totalAmount").innerText = "₹" + grandTotal;
+
+            // உங்கள் UPI ID-யை இங்கே மாற்றவும்
+            let upiId = "9488934686@ybl"; 
+            let myName = "Md Shop";
+            let upiUrl = "upi://pay?pa=" + upiId + "&pn=" + encodeURIComponent(myName) + "&am=" + grandTotal + "&cu=INR";
+            
+            document.getElementById("upiLink").setAttribute("href", upiUrl);
+            
+            showPage('page4');
+        }
+
         function sendOrder() {
-            // 1. தானாக உயரும் Order ID (localStorage மூலம்)
             let lastNum = localStorage.getItem("orderIDCount") || 20040;
             let nextNum = parseInt(lastNum) + 1;
             localStorage.setItem("orderIDCount", nextNum);
             let finalOrderID = "md" + nextNum;
 
-            // 2. விவரங்களைச் சேகரித்தல்
-            let data = {
-                name: document.getElementById("name").value,
-                addr: document.getElementById("address").value,
-                land: document.getElementById("landmark").value,
-                pin: document.getElementById("pincode").value,
-                state: document.getElementById("state").value,
-                mob: document.getElementById("mobile").value,
-                alt: document.getElementById("alt_mobile").value,
-                pcs: document.getElementById("pcs").value
-            };
+            let pcs = document.getElementById("pcs").value;
+            let total = document.getElementById("totalAmount").innerText;
 
-            // 3. சரிபார்த்தல் (Validation)
-            if(!data.name || !data.mob || !data.addr) {
-                alert("தயவுசெய்து முக்கியமான விவரங்களை (Name, Mobile, Address) நிரப்பவும்!");
-                return;
-            }
-
-            // 4. வாட்ஸ்அப் மெசேஜ் வடிவம்
-            let message = "*New Order send!* 🛍️%0A" + 
+            let message = "*New Order - Payment Screenshot Needed* 📸%0A" + 
                           "---------------------------%0A" +
                           "*Order ID:* " + finalOrderID + "%0A" + 
                           "---------------------------%0A" +
-                          "*Name:* " + data.name + "%0A" +
-                          "*Address:* " + data.addr + "%0A" +
-                          "*Landmark:* " + data.land + "%0A" +
-                          "*Pincode:* " + data.pin + "%0A" +
-                          "*State:* " + data.state + "%0A" +
-                          "*Mobile:* " + data.mob + "%0A" +
-                          "*Alt Mobile:* " + data.alt + "%0A" +
-                          "*Quantity:* " + data.pcs + " pcs%0A" +
+                          "*Name:* " + document.getElementById("name").value + "%0A" +
+                          "*Mobile:* " + document.getElementById("mobile").value + "%0A" +
+                          "*Quantity:* " + pcs + " pcs%0A" +
+                          "*Total Amount:* " + total + " (Incl. Courier)%0A" +
                           "---------------------------%0A" +
-                          "Please wait confirm this order!";
+                          "*Note:* I have paid the amount. Here is my screenshot below.%0A" +
+                          "---------------------------";
 
-            // 5. வாட்ஸ்அப்பிற்கு அனுப்புதல்
             let whatsappURL = "https://wa.me/919488934686?text=" + message;
             window.open(whatsappURL, "_blank");
         }
