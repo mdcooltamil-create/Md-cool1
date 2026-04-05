@@ -5,52 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDNET Order Panel</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f0f2f5; text-align: center; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        h2 { color: #00897b; margin-bottom: 10px; }
-        textarea { width: 100%; height: 200px; border: 2px solid #ddd; border-radius: 10px; padding: 15px; box-sizing: border-box; font-size: 14px; resize: vertical; }
+        /* பொதுவான டிசைன் */
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background-color: #f0f2f5; text-align: center; color: #333; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { color: #00897b; margin-bottom: 5px; }
+        .info { font-size: 14px; margin-bottom: 20px; color: #666; }
         
-        .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        textarea { 
+            width: 100%; height: 200px; border: 2px solid #ddd; border-radius: 10px; 
+            padding: 15px; box-sizing: border-box; font-size: 15px; resize: vertical; outline: none;
+        }
+        textarea:focus { border-color: #2ecc71; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         .btn-save { background-color: #2ecc71; color: white; }
         .btn-print { background-color: #34495e; color: white; display: none; } /* முதலில் மறைத்து வைக்கப்படும் */
-        .btn:hover { opacity: 0.9; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* லேபிள் டிஸ்ப்ளே (திரையில் பார்க்க) */
+        /* லேபிள் பிரிவியூ (திரையில் தெரிவது) */
         #previewArea { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 10px; 
-            margin-top: 30px; 
-            max-width: 800px; 
-            margin-left: auto; 
-            margin-right: auto;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; 
+            margin-top: 30px; max-width: 900px; margin-left: auto; margin-right: auto;
         }
-
         .label-box { 
-            border: 1px dashed #ccc; 
-            background: white;
-            padding: 15px; 
-            text-align: left;
-            min-height: 150px;
-            font-size: 14px;
-            line-height: 1.4;
-            position: relative;
+            border: 1px dashed #bbb; background: white; padding: 20px; 
+            text-align: left; min-height: 180px; font-size: 15px; line-height: 1.6; border-radius: 5px;
         }
 
-        .bold-text { font-weight: bold; font-size: 16px; color: #000; }
+        /* மிக முக்கியமான பகுதி: பெயர் மற்றும் பின்கோடு போல்ட் */
+        .bold-text { font-weight: bold; font-size: 18px; color: #000; }
 
-        /* பிரிண்ட் எடுக்கும்போது மட்டும் */
+        /* பிரிண்ட் எடுக்கும்போது லேபிள்கள் அடுக்கப்படும் முறை */
         @media print {
-            body * { visibility: hidden; }
-            #previewArea, #previewArea * { visibility: visible; }
+            body { background: white; margin: 0; }
+            .container, .btn-group { display: none !important; }
             #previewArea { 
-                position: absolute; left: 0; top: 0; width: 100%; 
-                grid-template-columns: 1fr 1fr; 
-                display: grid !important;
+                display: grid !important; grid-template-columns: 1fr 1fr; 
+                width: 100%; position: absolute; left: 0; top: 0; gap: 0;
             }
-            .label-box { border: 1px solid #000; height: 250px; } /* பிரிண்ட் பேப்பரில் கட்டத்தின் அளவு */
-            .btn, .container { display: none !important; }
+            .label-box { 
+                border: 0.5px solid #000; border-radius: 0; 
+                height: 250px; /* ஏ4 தாளில் ஒரு லேபிளின் உயரம் */
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -58,64 +56,82 @@
 
 <div class="container">
     <h2>MDNET Order Panel</h2>
-    <p>விஜய்: 9488934686 | Website: mdnet.site</p>
-    <textarea id="addressInput" placeholder="ஒவ்வொரு முகவரிக்கும் இடையில் ஒரு இடைவெளி (Empty Line) விட்டு பல முகவரிகளை இங்கே பேஸ்ட் செய்யவும்..."></textarea>
+    <div class="info">MD SHOP: 9488934686 | Website: mdnet.site</div>
     
-    <div class="button-group">
-        <button class="btn btn-save" onclick="generatePreview()">சீட்டில் சேமி & லேபிள் காட்டு</button>
-        <button id="printBtn" class="btn btn-print" onclick="window.print()">Print Labels</button>
+    <textarea id="addressInput" placeholder="பல முகவரிகளை இங்கே பேஸ்ட் செய்யவும்... (ஒவ்வொரு முகவரிக்கும் இடையில் ஒரு வரி இடைவெளி விடவும்)"></textarea>
+    
+    <div class="btn-group">
+        <button class="btn btn-save" onclick="processData()">சீட்டில் சேமி & லேபிள் காட்டு</button>
+        <button id="printBtn" class="btn btn-print" onclick="window.print()">லேபிள் பிரிண்ட் எடு</button>
     </div>
 </div>
 
 <div id="previewArea"></div>
 
 <script>
-    async function generatePreview() {
+    async function processData() {
         const inputText = document.getElementById('addressInput').value.trim();
-        if (!inputText) { alert("முகவரியை உள்ளிடவும்!"); return; }
+        if (!inputText) { alert("தயவுசெய்து முகவரியை உள்ளிடவும்!"); return; }
 
         const previewArea = document.getElementById('previewArea');
-        previewArea.innerHTML = ''; // பழைய லேபிள்களை நீக்க
+        previewArea.innerHTML = ''; // பழையதை நீக்க
 
-        // முகவரிகளைப் பிரித்தல் (ஒவ்வொரு முகவரிக்கும் நடுவில் இரண்டு என்டர் (Double Newline) இருந்தால் அதை ஒரு தனி அட்ரஸாக எடுக்கும்)
+        // முகவரிகளைப் பிரித்தல் (Double enter இருந்தால் தனி அட்ரஸாக எடுக்கும்)
         const addressList = inputText.split(/\n\s*\n/); 
 
-        addressList.forEach(addressBlock => {
-            if (addressBlock.trim()) {
-                const lines = addressBlock.trim().split('\n');
+        addressList.forEach(block => {
+            if (block.trim()) {
+                const lines = block.trim().split('\n');
                 const name = lines[0] || "";
-                const restOfAddress = lines.slice(1).join('<br>');
                 
-                // பின்கோடு மட்டும் தேடி தடிமனாக்க (6 இலக்க எண்)
-                const pincodeMatch = addressBlock.match(/\d{6}/);
-                const pincode = pincodeMatch ? pincodeMatch[0] : "";
+                // முகவரியின் மற்ற பகுதிகள்
+                let restAddress = lines.slice(1).join('<br>');
 
+                // 6 இலக்க பின்கோடு தேடி அதை போல்ட் செய்தல்
+                const pincodeMatch = block.match(/\d{6}/);
+                if (pincodeMatch) {
+                    const pc = pincodeMatch[0];
+                    restAddress = restAddress.replace(pc, `<span class="bold-text">${pc}</span>`);
+                }
+
+                // லேபிள் HTML
                 const labelHTML = `
                     <div class="label-box">
                         <strong>TO : </strong> <span class="bold-text">${name}</span><br>
-                        ${restOfAddress.replace(pincode, `<span class="bold-text">${pincode}</span>`)}
+                        ${restAddress}
                     </div>
                 `;
                 previewArea.innerHTML += labelHTML;
             }
         });
 
-        // கூகுள் ஷீட்டிற்கு அனுப்ப (முந்தைய ஸ்கிரிப்ட் URL இருந்தால் இங்கே பயன்படுத்தவும்)
-        saveToSheet(inputText);
+        // கூகுள் ஷீட்டிற்கு அனுப்புதல்
+        sendToGoogleSheet(inputText);
 
-        // பிரிண்ட் பட்டனை காண்பிக்க
+        // பிரிண்ட் பட்டனை காண்பித்தல்
         document.getElementById('printBtn').style.display = 'block';
+        
+        // திரையை லேபிள்கள் இருக்கும் இடத்திற்கு நகர்த்துதல்
+        window.scrollTo({ top: document.getElementById('previewArea').offsetTop, behavior: 'smooth' });
     }
 
-    function saveToSheet(data) {
-        const scriptURL = 'உங்கள்_APPS_SCRIPT_URL_இங்கே'; 
-        if(scriptURL !== 'உங்கள்_APPS_SCRIPT_URL_இங்கே') {
-            fetch(scriptURL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                body: `address=${encodeURIComponent(data)}`
-            });
+    function sendToGoogleSheet(data) {
+        // உங்கள் கூகுள் ஆப்ஸ் ஸ்கிரிப்ட் URL-ஐ கீழே உள்ள ' ' குறிக்குள் போடவும்
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzgLqneimvHouQP1pUGgb4haCyRF9z43JZ-wmWuAW8PfbPrEb3I5y1ukv7N5j-ciAir/exec'; 
+        
+        if (scriptURL.includes('URL')) {
+            console.log("Apps Script URL இன்னும் இணைக்கப்படவில்லை.");
+            return;
         }
+
+        fetch(scriptURL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `address=${encodeURIComponent(data)}`
+        })
+        .then(() => console.log("வெற்றிகரமாக கூகுள் ஷீட்டில் சேமிக்கப்பட்டது!"))
+        .catch(err => console.error("பிழை:", err));
     }
 </script>
 
